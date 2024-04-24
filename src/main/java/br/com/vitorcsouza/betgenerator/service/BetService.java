@@ -2,14 +2,23 @@ package br.com.vitorcsouza.betgenerator.service;
 
 import br.com.vitorcsouza.betgenerator.dto.BetDto;
 import br.com.vitorcsouza.betgenerator.dto.Bet2Dto;
+import br.com.vitorcsouza.betgenerator.model.Bet;
+import br.com.vitorcsouza.betgenerator.model.Jogo;
+import br.com.vitorcsouza.betgenerator.repository.BetRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class BetService {
+
+    @Autowired
+    BetRepository repository;
 
     private List<Integer> generatorNumbers(Integer randomNumbers, Integer howMuch) {
         Random random = new Random();
@@ -26,38 +35,96 @@ public class BetService {
         return list.stream().sorted().toList();
     }
 
-    public BetDto megasena() {
-        return new BetDto(generatorNumbers(6, 61));
+    private String betString(List<Integer> numbers) {
+        return numbers.stream().map(Objects::toString).collect(Collectors.joining(", "));
     }
+
+    public BetDto megasena() {
+        BetDto dto = new BetDto(generatorNumbers(6, 61));
+        Bet bet = new Bet(
+                Jogo.MEGASENA,
+                betString(dto.numbers())
+        );
+
+        repository.save(bet);
+
+        return dto;
+    }
+
 
 
     public Bet2Dto milionaria() {
-        return new Bet2Dto(
-          generatorNumbers(6, 51), generatorNumbers(2, 7)
+        Bet2Dto dto = new Bet2Dto(
+                generatorNumbers(6, 51), generatorNumbers(2, 7)
         );
+        Bet bet = new Bet(
+                Jogo.MILIONARIA,
+                "Matriz de Números: " + betString(dto.numbers1()) + ", Matriz de Trevos Numerados: " + betString(dto.numbers2())
+        );
+
+        repository.save(bet);
+        return dto;
     }
 
     public BetDto lotofacil(Integer randomNumbers) {
-        return new BetDto(generatorNumbers(randomNumbers, 26));
+        BetDto dto = new BetDto(generatorNumbers(randomNumbers, 26));
+        Bet bet = new Bet(
+                Jogo.LOTOFACIL,
+                betString(dto.numbers())
+        );
+
+        repository.save(bet);
+        return dto;
     }
 
 
     public BetDto quina(Integer randomNumbers) {
-        return new BetDto(generatorNumbers(randomNumbers, 81));
+        BetDto dto = new BetDto(generatorNumbers(randomNumbers, 81));
+
+        Bet bet = new Bet(
+                Jogo.QUINA,
+                betString(dto.numbers())
+        );
+        repository.save(bet);
+
+        return dto;
     }
 
     public BetDto lotomania() {
-        return new BetDto(generatorNumbers(50, 100));
+        BetDto dto = new BetDto(generatorNumbers(50, 100));
+        Bet bet = new Bet(
+                Jogo.LOTOMANIA,
+                betString(dto.numbers())
+        );
+        repository.save(bet);
+
+        return dto;
     }
 
     public BetDto duplasena(Integer randomNumbers) {
-        return new BetDto(generatorNumbers(randomNumbers, 51));
+        BetDto dto = new BetDto(generatorNumbers(randomNumbers, 51));
+        Bet bet = new Bet(
+                Jogo.DUPLASENA,
+                betString(dto.numbers())
+        );
+        repository.save(bet);
+
+        return dto;
     }
 
     public Bet2Dto diadesorte(Integer randomNumbers) {
-        return new Bet2Dto(
+        Bet2Dto dto = new Bet2Dto(
                 generatorNumbers(randomNumbers, 32),
                 generatorNumbers(1,13)
         );
+
+        Bet bet = new Bet(
+                Jogo.DIADESORTE,
+                "Números: " + betString(dto.numbers1()) + ", Mês de Sorte: " + betString(dto.numbers2())
+        );
+
+        repository.save(bet);
+
+        return dto;
     }
 }
