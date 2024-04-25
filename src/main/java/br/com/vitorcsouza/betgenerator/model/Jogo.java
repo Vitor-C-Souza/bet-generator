@@ -7,5 +7,6 @@ public enum Jogo {
     QUINA,
     LOTOMANIA,
     DUPLASENA,
+    CUSTOMIZADO,
     DIADESORTE
 }

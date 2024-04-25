@@ -1,14 +1,16 @@
 package br.com.vitorcsouza.betgenerator.controller;
 
+import br.com.vitorcsouza.betgenerator.dto.BetCustomDto;
 import br.com.vitorcsouza.betgenerator.dto.BetDto;
 import br.com.vitorcsouza.betgenerator.dto.Bet2Dto;
 import br.com.vitorcsouza.betgenerator.service.BetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
+
 
 @RestController
 @RequestMapping("/bet")
@@ -57,5 +59,12 @@ public class BetController {
     public ResponseEntity<Bet2Dto> DiaDeSorte(@PathVariable Integer randomNumbers){
         Bet2Dto dto = service.diadesorte(randomNumbers);
         return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/custom")
+    public ResponseEntity<BetDto> custom(@RequestBody BetCustomDto customDto, UriComponentsBuilder uriComponentsBuilder){
+        BetDto dto = service.custom(customDto);
+        URI endereco = uriComponentsBuilder.path("/custom/").build().toUri();
+        return ResponseEntity.created(endereco).body(dto);
     }
 }

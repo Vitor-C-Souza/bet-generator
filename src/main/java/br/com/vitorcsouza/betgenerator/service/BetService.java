@@ -1,5 +1,6 @@
 package br.com.vitorcsouza.betgenerator.service;
 
+import br.com.vitorcsouza.betgenerator.dto.BetCustomDto;
 import br.com.vitorcsouza.betgenerator.dto.BetDto;
 import br.com.vitorcsouza.betgenerator.dto.Bet2Dto;
 import br.com.vitorcsouza.betgenerator.model.Bet;
@@ -125,6 +126,18 @@ public class BetService {
 
         repository.save(bet);
 
+        return dto;
+    }
+
+    public BetDto custom(BetCustomDto customDto) {
+        BetDto dto = new BetDto(generatorNumbers(customDto.quantosNumeros(), customDto.margem()+1));
+
+        Bet bet = new Bet(
+                Jogo.CUSTOMIZADO,
+                betString(dto.numbers())
+        );
+
+        repository.save(bet);
         return dto;
     }
 }
